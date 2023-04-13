@@ -75,7 +75,7 @@ Refer to: [Docker instructions for managing repositories](https://docs.docker.co
 1. Create a user in dockerhub
 2. Go to the parent directory of the DockerFile: `cd dih-k8s-training-labs/lab-service-dev-solution`.
 
-3. `docker build -t <your-hub-user>/<repo-name>[:<tag>] . ` (e.g : docker build -t atzd1/myrest:1.0.1 .)
+3. `docker build --no-cache -t <your-hub-user>/<repo-name>[:<tag>] . ` (e.g : docker build --no-cache -t atzd1/myrest:1.0.1 .)
 4. `docker login`
 5. `docker push <your-hub-user>/<repo-name>[:<tag>]` (e.g : docker push atzd1/myrest:1.0.1)
 
