@@ -67,7 +67,7 @@ In the following steps, we will create a space named `demo` using the Ops-UI.
 ### Examine k8s environment variables
 This Spring Boot application uses Spring Profiles to manage configurations specific to an environment.
 1. Go to `dih-k8s-training-labs/lab-service-dev-solution/src/main/resources`. Notice there is a file `application-k8s.properties`, confirm the `space.manager property` is correct.
-2. Examine the file `dih-k8s-training-labs/yamls/mydeployment.yaml. There is a ConfigMap section and spec.containers.env section that sets the environment variable for the active spring profile.
+2. Examine the file `dih-k8s-training-labs/yamls/mydeployment.yaml`. There is a ConfigMap section and spec.containers.env section that sets the environment variable for the active spring profile.
 3. When Spring Boot is run, it will read the `application-k8s.properties`, because of the spring profile that is set.
 
 ###  Build & push image
