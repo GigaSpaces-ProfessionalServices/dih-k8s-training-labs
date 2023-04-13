@@ -3,8 +3,8 @@
 ## 	Service Development – Build a new service from scratch
 
 ###### Lab Goals
-1.  Understand how to build a simple Spring Boot application that connects to a space
-2.  Understand how to deploy the new service on a k8s environment
+1.  Understand how to build a simple Spring Boot application that connects to a space.
+2.  Understand how to deploy the new service on a k8s environment.
 ###### Lab Description
 This lab includes one solution in which we will perform the tasks required to implement a new simple service. 
 Use the slides from the lesson as a reference.
@@ -32,7 +32,7 @@ It's useful to test locally first to ensure everything is running smoothly befor
 2. In a separate terminal window run:
 ```
 cd dih-k8s-training-labs/lab-service-dev-solution;
-mvn clean spring-boot:run
+mvn clean spring-boot:run -Dspring-boot.run.profiles=localhost
 ```
 3. Open another terminal window and run the following (or use http://localhost:8080/swagger-ui.html):
 ```
@@ -64,11 +64,11 @@ In the following steps, we will create a space named `demo` using the Ops-UI.
 2. Open the Ops-UI. In a browser, go to `<xap manager external ip>:8090`
 3. Click on 'Monitor my services'; Click on '+' icon in top right, Deploy space service (space) name: ‘demo’. Single partition with no backup is ok.
 
-### Modify k8s environment variables
-Change application_k8s properties to reflect parameters in your k8s environments 
-1. Go to `dih-k8s-training-labs/lab-service-dev-solution/src/main/resources`. In the application_k8s.properties, confirm the `space.manager property` is correct. 
-2. Rename `application.properties` to `application_sg.properties` (sg = service grid) and `application_k8s.properties` to `application.properties`
-3. In a terminal window run: `mvn clean install`
+### Examine k8s environment variables
+This Spring Boot application uses Spring Profiles to manage configurations specific to an environment.
+1. Go to `dih-k8s-training-labs/lab-service-dev-solution/src/main/resources`. Notice there is a file `application-k8s.properties`, confirm the `space.manager property` is correct.
+2. Examine the file `dih-k8s-training-labs/yamls/mydeployment.yaml. There is a ConfigMap section and spec.containers.env section that sets the environment variable for the active spring profile.
+3. When Spring Boot is run, it will read the `application-k8s.properties`, because of the spring profile that is set.
 
 ###  Build & push image
 Refer to: [Docker instructions for managing repositories](https://docs.docker.com/docker-hub/repos/#:~:text=To%20push%20an%20image%20to,docs%2Fbase%3Atesting%20)
@@ -77,7 +77,7 @@ Refer to: [Docker instructions for managing repositories](https://docs.docker.co
 
 3. `docker build -t <your-hub-user>/<repo-name>[:<tag>] . ` (e.g : docker build -t atzd1/myrest:1.0.1 .)
 4. `docker login`
-5. `docker push <your-hub-user>/<repo-name>[:<tag>]` (e.g : docker push myrest:1.0.1)
+5. `docker push <your-hub-user>/<repo-name>[:<tag>]` (e.g : docker push atzd1/myrest:1.0.1)
 
 ### Prepare deployment yamls and deploy service
 1. Edit `mydeployment.yaml`. Change image to the image you built (e.g., `image: atzd1/mytest1:1.01`)

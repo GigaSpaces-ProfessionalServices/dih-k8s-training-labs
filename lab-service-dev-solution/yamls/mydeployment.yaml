@@ -1,3 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: application-k8s-config
+  namespace: default
+data:
+  spring-profile: k8s
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,6 +25,38 @@ spec:
     spec:
       containers:
         - name: my-rest-api
-          image: atzd1/mytest1:1.01
+          image: atzd1/myrest:1.0.1
+          imagePullPolicy: Always
           ports:
-            - containerPort: 8080
+            - name: my-rest-api-web
+              containerPort: 8080
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: "/"
+              port: my-rest-api-web
+              scheme: HTTP
+            initialDelaySeconds: 90
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: "/"
+              port: my-rest-api-web
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          env:
+            # Define the environment variable
+            - name: spring_profiles_active
+              valueFrom:
+                configMapKeyRef:
+                  # The ConfigMap containing the value you want to assign to spring_profiles_active
+                  name: application-k8s-config
+                  # Specify the key associated with the value
+                  key: spring-profile
+
