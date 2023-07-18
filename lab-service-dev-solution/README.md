@@ -79,6 +79,8 @@ Refer to: [Docker instructions for managing repositories](https://docs.docker.co
 4. `docker login`
 5. `docker push <your-hub-user>/<repo-name>[:<tag>]` (e.g : docker push atzd1/myrest:1.0.1)
 
+Note: To check if the correct docker image is being pulled in the pod, you can check the sha256 digest. From docker: `docker images --digests`. From kubernetes: `kubectl get pods <pod name> -o yaml`
+
 ### Prepare deployment yamls and deploy service
 1. Edit `mydeployment.yaml`. Change image to the image you built (e.g., `image: atzd1/mytest1:1.01`)
 2. Copy the yaml files to your jumper.
