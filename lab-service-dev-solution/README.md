@@ -4,7 +4,7 @@
 
 ###### Lab Goals
 1.  Understand how to build a simple Spring Boot application that connects to a space.
-2.  Understand how to deploy the new service on a k8s environment.
+2.  Understand how to deploy the new service on a Kubernetes - k8s environment.
 ###### Lab Description
 This lab includes one solution in which we will perform the tasks required to implement a new simple service. 
 Use the slides from the lesson as a reference.
@@ -12,9 +12,9 @@ Use the slides from the lesson as a reference.
 ##### Prerequisites
 
 ###### Kubernetes
-1. Make sure you have an EKS cluster created and `kubectl` and `helm` are installed and configured to connect to EKS.
+1. Make sure you have a k8s cluster created and `kubectl` and `helm` are installed and configured to connect to your k8s cluster.
 
-The jumper box will have the ability to connect to EKS.
+The jumper box will have the ability to connect to your k8s cluster.
 
 ###### For testing the REST application in a local environment
 1. You will need a local installation of GigaSpaces installed.
@@ -24,6 +24,7 @@ The jumper box will have the ability to connect to EKS.
 
 ###### For preparation of the Docker image
 1. Install [Docker](https://docs.docker.com/engine/install/)
+2. Access to dockerhub to build and push docker images.
 
 ## Test the REST API application on a local environment
 It's useful to test locally first to ensure everything is running smoothly before deployment onto k8s.
@@ -52,7 +53,7 @@ curl -v localhost:8080/queryrs?tableName=Persons
 ```
 
 ## Preparing the REST Application for deployment in the k8s environment
-### EKS cluster setup
+### K8s cluster setup
 1. Connect to the jumper. Refer to [OOTB-DIH-k8s-provisioning](https://github.com/GigaSpaces-ProfessionalServices/OOTB-DIH-k8s-provisioning) for k8s setup instructions.
 2. Run: `./install-dih-umbrella.sh`
 
