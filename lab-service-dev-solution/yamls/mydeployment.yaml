@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: my-rest-api
-          image: atzd1/myrest:1.0.0
+          image: atzd1/myrest:1.0.1
           imagePullPolicy: Always
           ports:
             - name: my-rest-api-web
