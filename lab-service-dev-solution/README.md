@@ -61,7 +61,7 @@ curl -v localhost:8080/queryrs?tableName=Persons
 In the following steps, we will create a space named `demo` using the Ops-UI.
 
 1. Locate in the External-IP of the XAP Manager load balancer service.
-`kubectl get services`; Find the manager External IP address.
+`kubectl get services -n dih`; Find the manager External IP address.
 2. Open the Ops-UI. In a browser, go to `<xap manager external ip>:8090`
 3. Click on 'Monitor my services'; Click on '+' icon in top right, Deploy space service (space) name: ‘demo’. Single partition with no backup is ok.
 
@@ -80,7 +80,7 @@ Refer to: [Docker instructions for managing repositories](https://docs.docker.co
 4. `docker login`
 5. `docker push <your-hub-user>/<repo-name>[:<tag>]` (e.g : docker push atzd1/myrest:1.0.1)
 
-Note: To check if the correct docker image is being pulled in the pod, you can check the sha256 digest. From docker: `docker images --digests`. From kubernetes: `kubectl get pods <pod name> -o yaml`
+Note: To check if the correct docker image is being pulled in the pod, you can check the sha256 digest. From docker: `docker images --digests`. From kubernetes: `kubectl get pods <pod name> -n dih -o yaml`
 
 ### Prepare deployment yamls and deploy service
 1. Edit `mydeployment.yaml`. Change image to the image you built (e.g., `image: atzd1/mytest1:1.01`)
@@ -90,26 +90,26 @@ Note: To check if the correct docker image is being pulled in the pod, you can c
 5. In jumper, `kubectl apply -f myservice.yaml`
 6. Add annotations to keep the loadbalancer of the service up
 
-   In the jumper run:
+Note: This step is not needed if the service is going to exposed using the intgress.
 ```
-kubectl patch svc my-rest-api -p '{"metadata":{"annotations":{"service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags":"Owner=owner,Project=gstm385,Name=my-rest-api"}}}'
+kubectl patch svc my-rest-api -p '{"metadata":{"annotations":{"service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags":"Owner=owner,Project=gstm385,Name=my-rest-api"}}}' -n dih
 ```
 ## Verify
 
 Run curl against the newly created k8s service
-1. In jumper run, `kubectl get services` 
-2. See the External IP for your service (my-rest-api service)
-3. Repeat verification steps in the first section of this lab. Replace local host with External IP of the my-rest-api service. For example,
+1. In jumper run, `kubectl get ingress -n dih`.  
+2. See the External IP for the ingress. The deployment will be routed from ingress hosting SpaceDeck and will be exposed on port 8085. The dih lab installation will have taken care of this step.
+3. Repeat verification steps in the first section of this lab. Replace local host with External IP of the SpaceDeck ingress. For example,
 ```
-curl -v <External IP of my rest api service>:8080/queryrs?tableName=Persons
+curl -v <External IP of Space Deck>:8085/queryrs?tableName=Persons
 ```
    
 ## Teardown
 Remove the deployed service and space
-1. In jumper, `kubectl delete service my-rest-api` ( kubectl delete service &lt; service-name &gt; )
-2. In jumper, `kubectl delete deploy my-rest-api` ( kubectl delete deploy &lt; deploy-name &gt; )  
+1. In jumper, `kubectl delete service my-rest-api -n dih` ( kubectl delete service &lt;service-name&gt; -n &lt;namespace&gt; )
+2. In jumper, `kubectl delete deploy my-rest-api -n dih` ( kubectl delete deploy &lt;deploy-name&gt; -n &lt;namespace&gt; )  
 3. Open Ops-UI, navigate to demo service,  Undeploy service.
 
-Note: Instead of using a k8s LoadBalancer service you can deploy as a ClusterIP service and use an ingress for access as explained in the northbound lab.
+Note: Instead of using a k8s with ClusterIP exposed via ingress you can also deploy as a LoadBalancer service.
 
 ## End of Lab
