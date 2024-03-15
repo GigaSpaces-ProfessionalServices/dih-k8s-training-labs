@@ -77,8 +77,9 @@ Refer to: [Docker instructions for managing repositories](https://docs.docker.co
 2. Go to the parent directory of the DockerFile: `cd dih-k8s-training-labs/lab-service-dev-solution`.
 
 3. `docker build --no-cache -t <your-hub-user>/<repo-name>[:<tag>] . ` (e.g : docker build --no-cache -t atzd1/myrest:1.0.1 .)
-4. `docker login`
-5. `docker push <your-hub-user>/<repo-name>[:<tag>]` (e.g : docker push atzd1/myrest:1.0.1)
+4. Have your access token ready and run: <p/>
+   `docker login --username <your username>` (e.g, docker login --username atzd1)
+6. `docker push <your-hub-user>/<repo-name>[:<tag>]` (e.g : docker push atzd1/myrest:1.0.1)
 
 Note: To check if the correct docker image is being pulled in the pod, you can check the sha256 digest. From docker: `docker images --digests`. From kubernetes: `kubectl get pods <pod name> -n dih -o yaml`
 
