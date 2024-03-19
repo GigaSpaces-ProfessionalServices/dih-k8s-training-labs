@@ -20,7 +20,7 @@
     <repositories>
         <repository>
             <id>org.openspaces</id>
-            <url>http://maven-repository.openspaces.org</url>
+            <url>https://maven-repository.openspaces.org</url>
         </repository>
         <repository>
             <id>spring-milestones</id>
