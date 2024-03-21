@@ -83,6 +83,11 @@ Refer to: [Docker instructions for managing repositories](https://docs.docker.co
 
 Note: To check if the correct docker image is being pulled in the pod, you can check the sha256 digest. From docker: `docker images --digests`. From kubernetes: `kubectl get pods <pod name> -n dih -o yaml`
 
+Note for Macs: If upon deployment the pod doesn't start and there is an error: 'java: exec format error', please use the following example to replace the build and push commands:
+```
+docker buildx build --platform linux/amd64 --push --no-cache -t atzd1/myrest:1.0.1 .
+```
+
 ### Prepare deployment yamls and deploy service
 1. Edit `mydeployment.yaml`. Change image to the image you built (e.g., `image: atzd1/mytest1:1.01`)
 2. Copy the yaml files to your jumper.
