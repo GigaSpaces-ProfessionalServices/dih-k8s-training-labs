@@ -33,7 +33,11 @@ public class DataController {
     @Value("${space.manager}")
     private String locators;
 
+    @Value("${user}")
+    private String user;
 
+    @Value("${password}")
+    private String password;
 
     @Value("${query.limit}")
     private int limit;
@@ -155,7 +159,7 @@ public class DataController {
             return space;
 
         space = new GigaSpaceConfigurer(new SpaceProxyConfigurer(spaceName)
-                .lookupLocators(locators).lookupGroups(group)).create();
+                .lookupLocators(locators).lookupGroups(group).credentials(user, password)).create();
         Properties props = new Properties();
         connection = GSConnection.getInstance(space.getSpace(), props);
         return space;

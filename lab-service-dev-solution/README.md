@@ -43,19 +43,23 @@ curl -X POST localhost:8080/newtable -H 'Content-type:application/txt' -d 'CREAT
 
 5. Run in a terminal window:
 ```
-curl -X POST localhost:8080/insert?tableName=Persons -H  'Content-type:application/json' -d '{"ID": 1, "LastName": "Levin", "FirstName" :"Avi", "Age":34 }'
-curl -X POST localhost:8080/insert?tableName=Persons -H  'Content-type:application/json' -d '{"ID": 2, "LastName": "Choen", "FirstName" :"Roni", "Age":34 }'
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: text/plain' -d '{"ID": 1, "LastName": "Levin", "FirstName" :"Avi", "Age":34 }' 'http://localhost:8080/insert?tableName=Persons'
+curl -X POST --header 'Content-Type: application/json' --header 'Accept: text/plain' -d '{"ID": 2, "LastName": "Choen", "FirstName" :"Roni", "Age":34 }' 'http://localhost:8080/insert?tableName=Persons'
 ```
 6. View the data in the space using the Ops-UI.
 7. Confirm the REST service is able to return results. Run in a terminal window:
 ```
-curl -v localhost:8080/queryrs?tableName=Persons
+curl -X GET --header 'Accept: text/plain' 'http://localhost:8080/queryrs?tableName=Persons'
 ```
 
 ## Preparing the REST Application for deployment in the k8s environment
 ### K8s cluster setup
+#### Option1
 1. Connect to the jumper. Refer to [OOTB-DIH-k8s-provisioning](https://github.com/GigaSpaces-ProfessionalServices/OOTB-DIH-k8s-provisioning) for k8s setup instructions.
 2. Run: `./install-dih-umbrella.sh`
+#### Option2
+1. Create your own k8s cluster
+2. Run: `helm install smartcache dihrepo/smart-cache --version 17.1.0-rc1 -n smartcache`
 
 ### Space creation
 In the following steps, we will create a space named `demo` using the Ops-UI.
@@ -100,7 +104,7 @@ Note: This step is not needed if the service is going to exposed using the intgr
 ```
 kubectl patch svc my-rest-api -p '{"metadata":{"annotations":{"service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags":"Owner=owner,Project=gstm385,Name=my-rest-api"}}}' -n dih
 ```
-## Verify
+## Verify - in case you have chosen K8s cluster setup - Option1
 
 Run curl against the newly created k8s service
 1. In jumper run, `kubectl get ingress -n dih`.  
@@ -109,7 +113,27 @@ Run curl against the newly created k8s service
 ```
 curl -v <External IP of Space Deck>:8085/queryrs?tableName=Persons
 ```
+
+## Verify - in case you have chosen K8s cluster setup - Option2
+
+2. Open port 8080 for the REST API
+3. Access the Spacedeck: http:// External IP
+4. Via the Spacedeck, create a space named `demo` with 1 partition and 1 backup.
+5. Via the Spacedeck, create and insert data to Persons table:
    
+         CREATE TABLE Persons (
+         ID int NOT NULL,
+         LastName varchar(255) NOT NULL,
+         FirstName varchar(255),
+         Age int,
+         PRIMARY KEY (ID)
+         )
+         
+         INSERT INTO Persons (ID, LastName, FirstName, Age)
+         VALUES (1, 'Choen', 'Avi', 30)
+6. Open the swagger-ui: http://<External IP of Space Deck>:8080/swagger-ui.html
+7. Go to the /queryrs and verify that you get the data.
+
 ## Teardown
 Remove the deployed service and space
 1. In jumper, `kubectl delete service my-rest-api -n dih` ( kubectl delete service &lt;service-name&gt; -n &lt;namespace&gt; )
